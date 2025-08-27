@@ -1,8 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Code2, Database, Globe, Smartphone, Zap } from 'lucide-react';
+import { useScrollAnimation, useStaggeredAnimation } from '@/hooks/use-scroll-animation';
 
 const Experience = () => {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { ref: experienceRef, visibleItems: expItems } = useStaggeredAnimation(3, 200);
+  const { ref: projectsRef, visibleItems: projectItems } = useStaggeredAnimation(3, 150);
+  const { ref: skillsRef, visibleItems: skillItems } = useStaggeredAnimation(4, 100);
+
   const experiences = [
     {
       role: 'Senior Low-Code Developer',
@@ -78,7 +84,10 @@ const Experience = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div 
+            ref={headerRef}
+            className={`text-center mb-16 animate-fade-in-up ${headerVisible ? 'visible' : ''}`}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Professional Experience
             </h2>
@@ -90,9 +99,13 @@ const Experience = () => {
           {/* Experience Timeline */}
           <div className="mb-16">
             <h3 className="text-2xl font-bold text-foreground mb-8">Career Journey</h3>
-            <div className="space-y-8">
+            <div ref={experienceRef} className="space-y-8">
               {experiences.map((exp, index) => (
-                <Card key={index} className="shadow-card hover:shadow-card-hover transition-all duration-300">
+                <Card 
+                  key={index} 
+                  className={`shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in-left ${expItems.has(index) ? 'visible' : ''}`}
+                  style={{ transitionDelay: `${index * 200}ms` }}
+                >
                   <CardContent className="p-6 md:p-8">
                     <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
                       <div>
@@ -124,9 +137,13 @@ const Experience = () => {
           {/* Featured Projects */}
           <div className="mb-16">
             <h3 className="text-2xl font-bold text-foreground mb-8">Featured Projects</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div ref={projectsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
-                <Card key={index} className="shadow-card hover:shadow-card-hover transition-all duration-300 group">
+                <Card 
+                  key={index} 
+                  className={`shadow-card hover:shadow-card-hover transition-all duration-300 group animate-scale-in ${projectItems.has(index) ? 'visible' : ''}`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="p-2 bg-accent rounded-lg group-hover:bg-accent-vibrant/10 transition-colors duration-300">
@@ -158,9 +175,13 @@ const Experience = () => {
           {/* Skills */}
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-8">Technical Skills</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div ref={skillsRef} className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {skills.map((skillGroup, index) => (
-                <Card key={index} className="shadow-card">
+                <Card 
+                  key={index} 
+                  className={`shadow-card animate-fade-in-up ${skillItems.has(index) ? 'visible' : ''}`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
                   <CardContent className="p-6">
                     <h4 className="font-semibold text-foreground mb-4">{skillGroup.category}</h4>
                     <div className="flex flex-wrap gap-2">

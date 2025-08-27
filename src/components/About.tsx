@@ -1,7 +1,12 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Code, Lightbulb, Zap, Target } from 'lucide-react';
+import { useScrollAnimation, useStaggeredAnimation } from '@/hooks/use-scroll-animation';
 
 const About = () => {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation();
+  const { ref: highlightsRef, visibleItems } = useStaggeredAnimation(4, 150);
+
   const highlights = [
     {
       icon: Code,
@@ -30,7 +35,10 @@ const About = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div 
+            ref={headerRef}
+            className={`text-center mb-16 animate-fade-in-up ${headerVisible ? 'visible' : ''}`}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               About Me
             </h2>
@@ -40,7 +48,10 @@ const About = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+          <div 
+            ref={contentRef}
+            className={`grid lg:grid-cols-2 gap-12 items-center mb-16 animate-fade-in-up ${contentVisible ? 'visible' : ''}`}
+          >
             <div className="space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
                 With a strong background in software development and a passion for innovation, I've dedicated my career to 
@@ -101,9 +112,13 @@ const About = () => {
           </div>
 
           {/* Highlights Grid */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div ref={highlightsRef} className="grid md:grid-cols-2 gap-6">
             {highlights.map((item, index) => (
-              <Card key={index} className="shadow-card hover:shadow-card-hover transition-all duration-300 group">
+              <Card 
+                key={index} 
+                className={`shadow-card hover:shadow-card-hover transition-all duration-300 group animate-scale-in ${visibleItems.has(index) ? 'visible' : ''}`}
+                style={{ transitionDelay: `${index * 150}ms` }}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="p-3 bg-accent rounded-lg group-hover:bg-accent-vibrant/10 transition-colors duration-300">

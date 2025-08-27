@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 import { Mail, Linkedin, MapPin, Phone } from 'lucide-react';
 
 const Contact = () => {
@@ -15,6 +16,9 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { ref: formRef, isVisible: formVisible } = useScrollAnimation();
+  const { ref: infoRef, isVisible: infoVisible } = useScrollAnimation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +74,10 @@ const Contact = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div 
+            ref={headerRef}
+            className={`text-center mb-16 animate-fade-in-up ${headerVisible ? 'visible' : ''}`}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Let's Work Together
             </h2>
@@ -82,7 +89,10 @@ const Contact = () => {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Contact Form */}
-            <Card className="shadow-card hover:shadow-card-hover transition-all duration-300">
+            <Card 
+              ref={formRef}
+              className={`shadow-card hover:shadow-card-hover transition-all duration-300 animate-fade-in-left ${formVisible ? 'visible' : ''}`}
+            >
               <CardHeader>
                 <CardTitle className="text-xl text-foreground">Send me a message</CardTitle>
               </CardHeader>
@@ -141,7 +151,10 @@ const Contact = () => {
             </Card>
 
             {/* Contact Information */}
-            <div className="space-y-6">
+            <div 
+              ref={infoRef}
+              className={`space-y-6 animate-fade-in-right ${infoVisible ? 'visible' : ''}`}
+            >
               <Card className="shadow-card">
                 <CardHeader>
                   <CardTitle className="text-xl text-foreground">Get in touch</CardTitle>

@@ -1,8 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Mail, Linkedin } from 'lucide-react';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 import profilePhoto from '@/assets/profile-photo.jpg';
 
 const Hero = () => {
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation({ threshold: 0.2 });
+  const { ref: imageRef, isVisible: imageVisible } = useScrollAnimation({ threshold: 0.3 });
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -11,12 +15,15 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="min-h-screen flex items-center bg-subtle-gradient">
+    <section id="home" className="min-h-screen flex items-center bg-subtle-gradient overflow-hidden">
       <div className="container mx-auto px-6 py-20">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           
           {/* Content */}
-          <div className="flex-1 text-center lg:text-left">
+          <div 
+            ref={heroRef}
+            className={`flex-1 text-center lg:text-left animate-fade-in-left ${heroVisible ? 'visible' : ''}`}
+          >
             <div className="mb-6">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
                 Hi, I'm{' '}
@@ -75,16 +82,19 @@ const Hero = () => {
           </div>
 
           {/* Profile Photo */}
-          <div className="flex-shrink-0 order-first lg:order-last">
+          <div 
+            ref={imageRef}
+            className={`flex-shrink-0 order-first lg:order-last animate-fade-in-right ${imageVisible ? 'visible' : ''}`}
+          >
             <div className="relative">
-              <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-card-hover">
+              <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-card-hover animate-float">
                 <img
                   src={profilePhoto}
                   alt="Radu George Besleaga"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent-vibrant/20 rounded-full -z-10 blur-xl" />
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent-vibrant/20 rounded-full -z-10 blur-xl animate-pulse-glow" />
             </div>
           </div>
         </div>

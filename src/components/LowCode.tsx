@@ -1,8 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Rocket, Zap, DollarSign, Layers, Clock, Shield } from 'lucide-react';
+import { useScrollAnimation, useStaggeredAnimation } from '@/hooks/use-scroll-animation';
 
 const LowCode = () => {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { ref: platformsRef, isVisible: platformsVisible } = useScrollAnimation();
+  const { ref: advantagesRef, visibleItems: advantageItems } = useStaggeredAnimation(6, 100);
+  const { ref: ctaRef, isVisible: ctaVisible } = useScrollAnimation();
+
   const platforms = [
     {
       name: 'Weweb',
@@ -68,7 +74,10 @@ const LowCode = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div 
+            ref={headerRef}
+            className={`text-center mb-16 animate-fade-in-up ${headerVisible ? 'visible' : ''}`}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Why Low-Code Solutions?
             </h2>
@@ -79,9 +88,16 @@ const LowCode = () => {
           </div>
 
           {/* Platform Cards */}
-          <div className="grid lg:grid-cols-2 gap-8 mb-16">
+          <div 
+            ref={platformsRef}
+            className={`grid lg:grid-cols-2 gap-8 mb-16 animate-slide-in-up ${platformsVisible ? 'visible' : ''}`}
+          >
             {platforms.map((platform, index) => (
-              <Card key={index} className="shadow-card hover:shadow-card-hover transition-all duration-300">
+              <Card 
+                key={index} 
+                className="shadow-card hover:shadow-card-hover transition-all duration-300"
+                style={{ transitionDelay: `${index * 200}ms` }}
+              >
                 <CardContent className="p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`w-3 h-3 rounded-full ${platform.color}`} />
@@ -117,9 +133,13 @@ const LowCode = () => {
               The Low-Code Advantage
             </h3>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div ref={advantagesRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {advantages.map((advantage, index) => (
-                <Card key={index} className="shadow-card hover:shadow-card-hover transition-all duration-300 group">
+                <Card 
+                  key={index} 
+                  className={`shadow-card hover:shadow-card-hover transition-all duration-300 group animate-scale-in ${advantageItems.has(index) ? 'visible' : ''}`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
                   <CardContent className="p-6">
                     <div className="text-center">
                       <div className="inline-flex p-3 bg-accent rounded-lg mb-4 group-hover:bg-accent-vibrant/10 transition-colors duration-300">
@@ -135,7 +155,10 @@ const LowCode = () => {
           </div>
 
           {/* Call to Action */}
-          <Card className="bg-hero-gradient text-primary-foreground shadow-card-hover">
+          <Card 
+            ref={ctaRef}
+            className={`bg-hero-gradient text-primary-foreground shadow-card-hover animate-fade-in-up ${ctaVisible ? 'visible' : ''}`}
+          >
             <CardContent className="p-8 md:p-12 text-center">
               <h3 className="text-2xl md:text-3xl font-bold mb-4">
                 Ready to Transform Your Ideas into Reality?
