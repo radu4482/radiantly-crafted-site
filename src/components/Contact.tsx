@@ -24,15 +24,31 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data?.error || 'Failed to send message');
+      }
+
       toast({
-        title: "Message Sent!",
+        title: 'Message Sent!',
         description: "Thank you for your message. I'll get back to you soon.",
       });
       setFormData({ name: '', email: '', message: '' });
+    } catch (error: any) {
+      toast({
+        title: 'Send failed',
+        description: error?.message || 'Please try again later.',
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
