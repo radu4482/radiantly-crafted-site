@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 // Vercel Node.js API route
 export default async function handler(req: any, res: any) {
@@ -7,7 +7,22 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!host || !user || !pass) {
+    res.status(500).json({ error: 'SMTP is not configured.' });
+    return;
+  }
+
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
+  });
 
   try {
     const { name, email, message } = req.body || {};
@@ -30,20 +45,15 @@ export default async function handler(req: any, res: any) {
       </div>
     `;
 
-    const { error } = await resend.emails.send({
-      from: "Smart Beard Contact <no-reply@smart-beard.com>",
-      to: [toAddress],
-      reply_to: email,
+    const fromAddress = process.env.CONTACT_FROM || `Portfolio <${user}>`;
+
+    await transporter.sendMail({
+      from: fromAddress,
+      to: toAddress,
+      replyTo: email,
       subject,
       html,
-    } as any);
-
-    if (error) {
-      // eslint-disable-next-line no-console
-      console.error('Resend error:', error);
-      res.status(500).json({ error: 'Failed to send email.' });
-      return;
-    }
+    });
 
     res.status(200).json({ success: true });
   } catch (err: any) {
