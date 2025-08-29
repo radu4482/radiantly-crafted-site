@@ -44,7 +44,7 @@ const Header = () => {
             onClick={() => scrollToSection('home')}
             className="text-xl font-semibold text-foreground hover:text-primary transition-colors"
           >
-            Radu George Besleaga
+            Smart Beard
           </button>
 
           {/* Desktop Navigation */}
