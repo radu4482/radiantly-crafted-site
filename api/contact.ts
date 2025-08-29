@@ -17,7 +17,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const toAddress = process.env.CONTACT_RECIPIENT || 'radu.besleaga@email.com';
+    const toAddress = process.env.CONTACT_RECIPIENT || 'radu.geroge44@gmail.com';
 
     const subject = `New message from ${name}`;
     const html = `
@@ -31,7 +31,7 @@ export default async function handler(req: any, res: any) {
     `;
 
     const { error } = await resend.emails.send({
-      from: 'Portfolio <onboarding@resend.dev>',
+      from: "Smart Beard Contact <no-reply@smart-beard.com>",
       to: [toAddress],
       reply_to: email,
       subject,
