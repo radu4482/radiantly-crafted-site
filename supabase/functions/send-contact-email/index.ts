@@ -12,10 +12,10 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, message } = await req.json()
+    const { title, email, description } = await req.json()
 
     // Validate required fields
-    if (!name || !email || !message) {
+    if (!title || !email || !description) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { 
@@ -48,18 +48,17 @@ serve(async (req) => {
         from: 'Portfolio Contact <onboarding@resend.dev>',
         to: ['radu.besleaga@email.com'], // Replace with your actual email
         reply_to: email,
-        subject: `New message from ${name}`,
+        subject: title,
         html: `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
-              New Portfolio Contact
+              ${title}
             </h2>
             <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p><strong>Name:</strong> ${name}</p>
               <p><strong>Email:</strong> ${email}</p>
               <p><strong>Message:</strong></p>
               <div style="background: white; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff;">
-                ${message.replace(/\n/g, '<br>')}
+                ${description.replace(/\n/g, '<br>')}
               </div>
             </div>
             <p style="color: #666; font-size: 14px; margin-top: 30px;">
@@ -83,7 +82,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Email sent successfully' }),
+      JSON.stringify({ success: true }),
       { 
         status: 200, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }

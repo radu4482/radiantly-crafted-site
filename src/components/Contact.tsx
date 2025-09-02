@@ -27,7 +27,11 @@ const Contact = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('send-contact-email', {
-        body: formData,
+        body: {
+          title: formData.name, // Map name to title
+          email: formData.email,
+          description: formData.message // Map message to description
+        },
       });
 
       if (error) {
