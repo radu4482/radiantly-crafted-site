@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 import { Mail, Linkedin, MapPin, Phone } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -25,15 +26,12 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData,
       });
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data?.error || 'Failed to send message');
+      if (error) {
+        throw new Error(error.message || 'Failed to send message');
       }
 
       toast({
@@ -45,6 +43,7 @@ const Contact = () => {
       toast({
         title: 'Send failed',
         description: error?.message || 'Please try again later.',
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
